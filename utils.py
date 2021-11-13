@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import gym
 
+from shooter_env import ShooterEnv
+
 
 # ------------------------- Plotting methods -------------------------
 

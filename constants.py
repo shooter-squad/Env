@@ -1,8 +1,12 @@
 import os
 from enum import Enum
 
+package_directory = os.path.dirname(os.path.abspath(__file__))
+
 
 # ------------------------- Parameters -------------------------
+
+
 class Action(Enum):
     """
     All actions in the game.
@@ -90,19 +94,19 @@ ULTIMATE_ABILITY_HEIGHT = 400
 ULTIMATE_ABILITY_MAX_DAMAGE = 2
 ULTIMATE_ABILITY_DAMAGE_INTERVAL = 10
 
-YELLOW_SPACESHIP_IMAGE_PATH = os.path.join('Assets', 'spaceship_yellow.png')
-RED_SPACESHIP_IMAGE_PATH = os.path.join('Assets', 'spaceship_red.png')
-BLUE_SPACESHIP_IMAGE_PATH = os.path.join('Assets', 'spaceship_blue.png')
-GREEN_SPACESHIP_IMAGE_PATH = os.path.join('Assets', 'spaceship_green.png')
-YELLOW_SPACESHIP_SHIELDED_IMAGE_PATH = os.path.join('Assets', 'spaceship_yellow_shielded.png')
-RED_SPACESHIP_SHIELDED_IMAGE_PATH = os.path.join('Assets', 'spaceship_red_shielded.png')
-HEALTH_PACK_IMAGE_PATH = os.path.join('Assets', 'health_pack.png')
-OBSTACLE_IMAGE_PATH = os.path.join('Assets', 'obstacle.png')
-YELLOW_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join('Assets', 'yellow_ultimate_ability.png')
-RED_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join('Assets', 'red_ultimate_ability.png')
-BLUE_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join('Assets', 'blue_ultimate_ability.png')
-GREEN_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join('Assets', 'green_ultimate_ability.png')
-SPACE_IMAGE_PATH = os.path.join('Assets', 'space.png')
+YELLOW_SPACESHIP_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_yellow.png')
+RED_SPACESHIP_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_red.png')
+BLUE_SPACESHIP_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_blue.png')
+GREEN_SPACESHIP_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_green.png')
+YELLOW_SPACESHIP_SHIELDED_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_yellow_shielded.png')
+RED_SPACESHIP_SHIELDED_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_red_shielded.png')
+HEALTH_PACK_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'health_pack.png')
+OBSTACLE_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'obstacle.png')
+YELLOW_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'yellow_ultimate_ability.png')
+RED_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'red_ultimate_ability.png')
+BLUE_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'blue_ultimate_ability.png')
+GREEN_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'green_ultimate_ability.png')
+SPACE_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'space.png')
 
 # ------------------------- Colors -------------------------
 WHITE_COLOR = (255, 255, 255)
