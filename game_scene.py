@@ -5,11 +5,11 @@ from typing import Tuple
 import pygame
 import numpy as np
 
-from constants import *
-from health_pack import HealthPack
-from obstacle import Obstacle
-from spaceship import Spaceship, SpaceshipType
-from ultimate_ability import UltimateAbility
+from Env.constants import *
+from Env.health_pack import HealthPack
+from Env.obstacle import Obstacle
+from Env.spaceship import Spaceship, SpaceshipType
+from Env.ultimate_ability import UltimateAbility
 
 # os.environ["SDL_VIDEODRIVER"] = "dummy"
 

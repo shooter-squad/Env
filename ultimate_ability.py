@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from constants import *
+from Env.constants import *
 
 
 class UltimateAbility(pygame.sprite.Sprite):
