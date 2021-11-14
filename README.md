@@ -13,8 +13,8 @@ To write scripts for enemy, go to `calculate_enemy_action` method of GameScene.
 
 ## Change Log
 
-11/11
-- Moved env into a submodule.
+11/13
+- Moved env into a submodule and fix relatedissues.
 
 10/26
 - Updated version with up, down, shield, ultimate abilities, health packs and obstacles.
