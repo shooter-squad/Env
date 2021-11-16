@@ -17,8 +17,8 @@ class Action(Enum):
     FIRE = 3
     UP = 4
     DOWN = 5
-    ACTIVATE_SHIELD = 6
-    USE_ULTIMATE_ABILITY = 7
+    # ACTIVATE_SHIELD = 6
+    # USE_ULTIMATE_ABILITY = 7
 
 
 class Reward(Enum):

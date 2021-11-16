@@ -212,10 +212,10 @@ class GameScene(object):
                 player_action_num = 4
             if keys_pressed[pygame.K_DOWN]:
                 player_action_num = 5
-            if keys_pressed[pygame.K_q]:
-                player_action_num = 6
-            if keys_pressed[pygame.K_w]:
-                player_action_num = 7
+            # if keys_pressed[pygame.K_q]:
+            #     player_action_num = 6
+            # if keys_pressed[pygame.K_w]:
+            #     player_action_num = 7
 
         if player_action_num == -1:
             player_action_num = 0
@@ -344,8 +344,8 @@ class GameScene(object):
         """
         Pre-scripted behavior of enemy
         """
-        if enemy.ultimate_available and calculate_distance(enemy, self.player) <= ULTIMATE_ABILITY_WIDTH / 2:
-            return Action.USE_ULTIMATE_ABILITY
+        # if enemy.ultimate_available and calculate_distance(enemy, self.player) <= ULTIMATE_ABILITY_WIDTH / 2:
+        #     return Action.USE_ULTIMATE_ABILITY
 
         if calculate_distance(enemy, self.player) <= SPACESHIP_WIDTH * 2:
             if enemy.enemy_behavior == Action.RIGHT and self.player.rect.centerx < enemy.rect.centerx:
@@ -357,7 +357,8 @@ class GameScene(object):
             enemy.enemy_behavior = Action.LEFT
         if enemy.enemy_behavior == Action.LEFT and enemy.rect.right >= WIDTH:
             enemy.enemy_behavior = Action.RIGHT
-        fire_or_shield = Action.ACTIVATE_SHIELD if enemy.shield_enabled and enemy.get_shield_cool_down() == 0 else Action.FIRE
+        # fire_or_shield = Action.ACTIVATE_SHIELD if enemy.shield_enabled and enemy.get_shield_cool_down() == 0 else Action.FIRE
+        fire_or_shield = Action.FIRE
         if enemy.type == SpaceshipType.CHARGE_ENEMY or enemy.enemy_behavior == Action.UP:
             if enemy.rect.bottom >= HEIGHT:
                 enemy.health = 0  # soft kill

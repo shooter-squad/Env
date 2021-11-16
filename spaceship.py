@@ -76,10 +76,10 @@ class Spaceship(pygame.sprite.Sprite):
 
         if action == Action.FIRE:
             self.fire()
-        elif action == Action.ACTIVATE_SHIELD:
-            self.activate_shield()
-        elif action == Action.USE_ULTIMATE_ABILITY:
-            self.use_ultimate_ability()
+        # elif action == Action.ACTIVATE_SHIELD:
+        #     self.activate_shield()
+        # elif action == Action.USE_ULTIMATE_ABILITY:
+        #     self.use_ultimate_ability()
         else:
             vel = 1 if self.up_direction else -1
             if action == Action.LEFT:
