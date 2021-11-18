@@ -208,10 +208,11 @@ class GameScene(object):
                 player_action_num = 2
             if keys_pressed[pygame.K_SPACE]:
                 player_action_num = 3
-            if keys_pressed[pygame.K_UP]:
-                player_action_num = 4
-            if keys_pressed[pygame.K_DOWN]:
-                player_action_num = 5
+            # TODO: disabled UP and DOWN
+            # if keys_pressed[pygame.K_UP]:
+            #     player_action_num = 4
+            # if keys_pressed[pygame.K_DOWN]:
+            #     player_action_num = 5
             # if keys_pressed[pygame.K_q]:
             #     player_action_num = 6
             # if keys_pressed[pygame.K_w]:
@@ -223,30 +224,12 @@ class GameScene(object):
         # * add player_action_num
         self.player_action_num = player_action_num
 
-        # Check if game is over
-        winner_text = ""
-        all_enemies_dead = True
-        for enemy in self.enemy_group.sprites():
-            if isinstance(enemy, Spaceship) and not enemy.is_dead():
-                all_enemies_dead = False
-                break
-
-        if all_enemies_dead:
-            winner_text = "Yellow Wins!"
-        elif self.player.is_dead():
-            winner_text = "Red Wins!"
-
-        if winner_text != "":
-            self.draw_winner(winner_text)
-            self.done = True
-            return True
-
         self.reward = 0
         self.update(player_action_num)
         self.draw_window()
         self.clock.tick(FPS)
 
-        return False
+        return self.check_game_over()
 
     def AdditionalState(self) -> np.ndarray:
         """
@@ -291,6 +274,27 @@ class GameScene(object):
         pygame.quit()
 
     # ------------------------- Game logic methods -------------------------
+
+    def check_game_over(self) -> bool:
+        # Check if game is over
+        winner_text = ""
+        all_enemies_dead = True
+        for enemy in self.enemy_group.sprites():
+            if isinstance(enemy, Spaceship) and not enemy.is_dead():
+                all_enemies_dead = False
+                break
+
+        if all_enemies_dead:
+            winner_text = "Yellow Wins!"
+        elif self.player.is_dead():
+            winner_text = "Red Wins!"
+
+        if winner_text != "":
+            self.draw_winner(winner_text)
+            self.done = True
+            return True
+
+        return False
 
     def spawn_obstacles(self):
         """
@@ -337,7 +341,7 @@ class GameScene(object):
             is_player=False,
             type=SpaceshipType.CHARGE_ENEMY
         )
-        enemy.enemy_behavior = Action.UP
+        enemy.enemy_behavior = Action.NOOP  # TODO: disabled UP and DOWN
         self.enemy_group.add(enemy)
 
     def calculate_enemy_action(self, enemy: Spaceship, i: int) -> Action:
@@ -357,22 +361,23 @@ class GameScene(object):
             enemy.enemy_behavior = Action.LEFT
         if enemy.enemy_behavior == Action.LEFT and enemy.rect.right >= WIDTH:
             enemy.enemy_behavior = Action.RIGHT
+        # TODO: disabled UP and DOWN
         # fire_or_shield = Action.ACTIVATE_SHIELD if enemy.shield_enabled and enemy.get_shield_cool_down() == 0 else Action.FIRE
         fire_or_shield = Action.FIRE
-        if enemy.type == SpaceshipType.CHARGE_ENEMY or enemy.enemy_behavior == Action.UP:
-            if enemy.rect.bottom >= HEIGHT:
-                enemy.health = 0  # soft kill
-            movement = Action.UP
-        else:
-            left_or_right = Action.LEFT if enemy.enemy_behavior == Action.LEFT else Action.RIGHT
-            if enemy.rect.y < ENEMY_START_Y_RANGES[i][0] + 50:
-                up_or_down = Action.UP if random.random() < 0.9 else Action.DOWN
-            elif enemy.rect.y > ENEMY_START_Y_RANGES[i][1]:
-                up_or_down = Action.DOWN if random.random() < 0.9 else Action.UP
-            else:
-                up_or_down = Action.UP if random.random() < 0.5 else Action.DOWN
-            movement = left_or_right if random.random() < 0.95 else up_or_down
-        enemy_action = movement if random.random() < 0.7 else fire_or_shield
+        # if enemy.type == SpaceshipType.CHARGE_ENEMY or enemy.enemy_behavior == Action.UP:
+        #     if enemy.rect.bottom >= HEIGHT:
+        #         enemy.health = 0  # soft kill
+        #     movement = Action.UP
+        # else:
+        left_or_right = Action.LEFT if enemy.enemy_behavior == Action.LEFT else Action.RIGHT
+        #     if enemy.rect.y < ENEMY_START_Y_RANGES[i][0] + 50:
+        #         up_or_down = Action.UP if random.random() < 0.9 else Action.DOWN
+        #     elif enemy.rect.y > ENEMY_START_Y_RANGES[i][1]:
+        #         up_or_down = Action.DOWN if random.random() < 0.9 else Action.UP
+        #     else:
+        #         up_or_down = Action.UP if random.random() < 0.5 else Action.DOWN
+        #     movement = left_or_right  # if random.random() < 0.95 else up_or_down
+        enemy_action = left_or_right if random.random() < 0.7 else fire_or_shield
 
         return enemy_action
 
@@ -395,11 +400,11 @@ class GameScene(object):
             i += 1
 
         # Spawn health pack if time is reached
-        if self.frame_count == HEALTH_PACK_TIME_INTERVAL:
+        if HEALTH_PACK_ENABLED and self.frame_count == HEALTH_PACK_TIME_INTERVAL:
             self.spawn_health_pack()
 
         # Spawn health pack if time is reached
-        if self.frame_count == CHARGE_ENEMY_SPAWN_INTERVAL:
+        if CHARGE_ENEMY_ENABLED and self.frame_count == CHARGE_ENEMY_SPAWN_INTERVAL:
             self.spawn_charge_enemy()
 
         # Check collisions:

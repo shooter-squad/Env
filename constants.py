@@ -15,8 +15,8 @@ class Action(Enum):
     LEFT = 1
     RIGHT = 2
     FIRE = 3
-    UP = 4
-    DOWN = 5
+    # TODO: disabled UP and DOWN
+    # UP = 4
     # ACTIVATE_SHIELD = 6
     # USE_ULTIMATE_ABILITY = 7
 
@@ -33,9 +33,11 @@ class Reward(Enum):
     PLAYER_HIT_CHARGE_ENEMY = -100
 
 
-PURE_COLOR_DISPLAY = False
-NEGATIVE_REWARD_ENABLED = True
+PURE_COLOR_DISPLAY = True
+NEGATIVE_REWARD_ENABLED = False
 NEGATIVE_REWARD = 0.005
+CHARGE_ENEMY_ENABLED = False
+HEALTH_PACK_ENABLED = False
 
 # ------------------------- Values -------------------------
 TITLE = "AI bot"
@@ -68,7 +70,7 @@ SPACESHIP_WIDTH = 60
 SPACESHIP_HEIGHT = 72
 SHIELD_WIDTH = 118
 SHIELD_HEIGHT = 114
-ENEMY_START_HEALTH = 4
+ENEMY_START_HEALTH = 5
 PLAYER_START_HEALTH = 10
 
 RED_START_POSITION = (375, 80)

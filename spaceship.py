@@ -76,6 +76,7 @@ class Spaceship(pygame.sprite.Sprite):
 
         if action == Action.FIRE:
             self.fire()
+        # TODO: disabled UP and DOWN
         # elif action == Action.ACTIVATE_SHIELD:
         #     self.activate_shield()
         # elif action == Action.USE_ULTIMATE_ABILITY:
@@ -86,15 +87,15 @@ class Spaceship(pygame.sprite.Sprite):
                 vel *= -VEL
             elif action == Action.RIGHT:
                 vel *= VEL
-            elif action == Action.UP:
-                vel *= -VEL
-            elif action == Action.DOWN:
-                vel *= VEL
+            # elif action == Action.UP:
+            #     vel *= -VEL
+            # elif action == Action.DOWN:
+            #     vel *= VEL
 
             if action in [Action.LEFT, Action.RIGHT]:
                 self.rect.x += vel
-            elif action in [Action.UP, Action.DOWN]:
-                self.rect.y += vel
+            # elif action in [Action.UP, Action.DOWN]:
+            #     self.rect.y += vel
 
             for other in others:
                 if self.type == SpaceshipType.CHARGE_ENEMY:
@@ -104,8 +105,8 @@ class Spaceship(pygame.sprite.Sprite):
                 if pygame.sprite.collide_rect(other, self):
                     if action in [Action.LEFT, Action.RIGHT]:
                         self.rect.x -= vel
-                    elif action in [Action.UP, Action.DOWN]:
-                        self.rect.y -= vel
+                    # elif action in [Action.UP, Action.DOWN]:
+                    #     self.rect.y -= vel
                     break
 
         # Keep sprite on screen
