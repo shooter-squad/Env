@@ -13,8 +13,13 @@ To write scripts for enemy, go to `calculate_enemy_action` method of GameScene.
 
 ## Change Log
 
+11/17
+- Remove up and down actions.
+- Pure color display.
+- Disable negative rewards, health packs and charge enemy.
+
 11/13
-- Moved env into a submodule and fix relatedissues.
+- Moved env into a submodule and fix related issues.
 
 10/26
 - Updated version with up, down, shield, ultimate abilities, health packs and obstacles.
