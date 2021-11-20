@@ -22,6 +22,24 @@ def calculate_distance(first: pygame.sprite.Sprite, second: pygame.sprite.Sprite
     return dist
 
 
+def generate_state_vector(spaceship: Spaceship, vec_len: int) -> np.ndarray:
+    """
+    Generates a state vector for one spaceship given vector length.
+    """
+    res = [-1 for _ in range(vec_len)]
+    if spaceship.is_dead():
+        return np.array(res)
+
+    res[0] = spaceship.rect.centerx
+    res[1] = spaceship.rect.centery
+    i = 2
+    for bullet in spaceship.bullets.sprites():
+        res[i] = bullet.rect.centerx
+        res[i + 1] = bullet.rect.centery
+        i += 2
+    return np.array(res)
+
+
 class GameScene(object):
     """
     Our shooter game wrapped in a class.
@@ -127,9 +145,25 @@ class GameScene(object):
     def ActionCount(self):
         return len(Action)
 
-    def ScreenShot(self):
+    def ScreenShot(self) -> np.ndarray:
         pixels_arr = pygame.surfarray.array3d(self.screen)
         return pixels_arr
+
+    def StateVector(self, extra_padding: bool) -> np.ndarray:
+        len_per_spaceship = (STATE_VECTOR_MAX_BULLET_PER_SPACESHIP + 1) * 2
+        total_len = len_per_spaceship * (1 + NORMAL_ENEMY_COUNT + int(extra_padding) * CHARGE_ENEMY_COUNT)
+        state_arr = np.zeros(total_len, dtype=np.float32)
+        state_arr.fill(-1)
+
+        state_arr[0:len_per_spaceship] = generate_state_vector(self.player, len_per_spaceship)
+
+        i = len_per_spaceship
+        for enemy in self.enemy_group.sprites():
+            if isinstance(enemy, Spaceship) and enemy.type == SpaceshipType.NORMAL_ENEMY:
+                state_arr[i:i + len_per_spaceship] = generate_state_vector(enemy, len_per_spaceship)
+            i += len_per_spaceship
+
+        return state_arr
 
     def Done(self):
         return self.done
