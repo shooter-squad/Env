@@ -2,7 +2,7 @@ from typing import Tuple
 
 import pygame
 
-from Env.constants import *
+from constants import *
 
 
 class Bullet(pygame.sprite.Sprite):

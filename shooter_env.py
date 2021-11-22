@@ -2,8 +2,8 @@ import numpy as np
 from gym import Env
 from gym.spaces import Discrete, Box
 
-from Env.constants import *
-from Env.game_scene import GameScene
+from constants import *
+from game_scene import GameScene
 
 
 class ShooterEnv(Env):

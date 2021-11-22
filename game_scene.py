@@ -5,11 +5,11 @@ from typing import Tuple
 import pygame
 import numpy as np
 
-from Env.constants import *
-from Env.health_pack import HealthPack
-from Env.obstacle import Obstacle
-from Env.spaceship import Spaceship, SpaceshipType
-from Env.ultimate_ability import UltimateAbility
+from constants import *
+from health_pack import HealthPack
+from obstacle import Obstacle
+from spaceship import Spaceship, SpaceshipType
+from ultimate_ability import UltimateAbility
 
 # os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -214,8 +214,8 @@ class GameScene(object):
                 player_action_num = 5
             if keys_pressed[pygame.K_q]:
                 player_action_num = 6
-            if keys_pressed[pygame.K_w]:
-                player_action_num = 7
+            # if keys_pressed[pygame.K_w]:
+            #     player_action_num = 7
 
         if player_action_num == -1:
             player_action_num = 0
@@ -344,8 +344,8 @@ class GameScene(object):
         """
         Pre-scripted behavior of enemy
         """
-        if enemy.ultimate_available and calculate_distance(enemy, self.player) <= ULTIMATE_ABILITY_WIDTH / 2:
-            return Action.USE_ULTIMATE_ABILITY
+        # if enemy.ultimate_available and calculate_distance(enemy, self.player) <= ULTIMATE_ABILITY_WIDTH / 2:
+        #     return Action.USE_ULTIMATE_ABILITY
 
         if calculate_distance(enemy, self.player) <= SPACESHIP_WIDTH * 2:
             if enemy.enemy_behavior == Action.RIGHT and self.player.rect.centerx < enemy.rect.centerx:
@@ -398,7 +398,7 @@ class GameScene(object):
             self.spawn_health_pack()
 
         # Spawn health pack if time is reached
-        if self.frame_count == CHARGE_ENEMY_SPAWN_INTERVAL:
+        if self.frame_count == CHARGE_ENEMY_SPAWN_INTERVAL and CHARGE_ENEMY_ENABLED:
             self.spawn_charge_enemy()
 
         # Check collisions:

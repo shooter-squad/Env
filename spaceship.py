@@ -3,9 +3,9 @@ from enum import Enum
 
 import pygame
 
-from Env.bullet import Bullet
-from Env.ultimate_ability import UltimateAbility
-from Env.constants import *
+from bullet import Bullet
+from ultimate_ability import UltimateAbility
+from constants import *
 
 
 class SpaceshipType(Enum):
@@ -78,8 +78,8 @@ class Spaceship(pygame.sprite.Sprite):
             self.fire()
         elif action == Action.ACTIVATE_SHIELD:
             self.activate_shield()
-        elif action == Action.USE_ULTIMATE_ABILITY:
-            self.use_ultimate_ability()
+        # elif action == Action.USE_ULTIMATE_ABILITY:
+        #     self.use_ultimate_ability()
         else:
             vel = 1 if self.up_direction else -1
             if action == Action.LEFT:
