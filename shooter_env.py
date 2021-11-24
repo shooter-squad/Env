@@ -6,20 +6,30 @@ from constants import *
 from game_scene import GameScene
 
 
+class StateMode(Enum):
+    SCREENSHOT_MODE = 0
+    VECTOR_MODE_1 = 1
+    VECTOR_MODE_2 = 2
+
+
 class ShooterEnv(Env):
     """
     The custom environment class for our shooter game.
     """
 
-    def __init__(self):
+    def __init__(self, state_mode: StateMode = StateMode.SCREENSHOT_MODE):
         self.game_scene = GameScene()
         self.action_space = Discrete(self.game_scene.ActionCount())
+        self.state_mode = state_mode
         # self.observation_space = self.game_scene.ScreenShot()
         self.observation_shape = (WIDTH, HEIGHT, 3)
         self.observation_space = Box(low=np.zeros(self.observation_shape),
                                      high=np.full(self.observation_shape, 255),
                                      dtype=np.uint8)
-        self.state = self.game_scene.ScreenShot()
+        if self.state_mode == StateMode.SCREENSHOT_MODE:
+            self.state = self.game_scene.ScreenShot()
+        else:
+            self.state = self.game_scene.StateVector(self.state_mode == StateMode.VECTOR_MODE_2)
 
         self.reward = 0
         self.done = self.game_scene.Done()
@@ -32,7 +42,10 @@ class ShooterEnv(Env):
         # More return values
         self.done = self.game_scene.Play(action_num)
         self.reward = self.game_scene.Reward()
-        self.state = self.game_scene.ScreenShot()
+        if self.state_mode == StateMode.SCREENSHOT_MODE:
+            self.state = self.game_scene.ScreenShot()
+        else:
+            self.state = self.game_scene.StateVector(self.state_mode == StateMode.VECTOR_MODE_2)
         self.info = self.game_scene.AdditionalState()
 
         # * add player_action_num
@@ -45,7 +58,10 @@ class ShooterEnv(Env):
 
     def reset(self):
         self.game_scene.Reset()
-        self.state = self.game_scene.ScreenShot()
+        if self.state_mode == StateMode.SCREENSHOT_MODE:
+            self.state = self.game_scene.ScreenShot()
+        else:
+            self.state = self.game_scene.StateVector(self.state_mode == StateMode.VECTOR_MODE_2)
         self.done = self.game_scene.Done()
         self.info = self.game_scene.AdditionalState()
         return self.state
@@ -55,7 +71,7 @@ class ShooterEnv(Env):
 
 
 if __name__ == '__main__':
-    env = ShooterEnv()
+    env = ShooterEnv(StateMode.VECTOR_MODE_2)
 
     action_list = [
         0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7
@@ -66,7 +82,7 @@ if __name__ == '__main__':
     while True:
         state, reward, done, info = env.step(-1)
         score += reward
-        print("Reward: " + str(score))
+        print("State vec: " + str(state))
         if done:
             score = 0
             env.reset()

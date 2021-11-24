@@ -23,7 +23,7 @@ class Spaceship(pygame.sprite.Sprite):
     """
 
     def __init__(self, image: pygame.Surface, shielded_image: pygame.Surface, ultimate_ability_image: pygame.Surface,
-                 screen_rect: pygame.Rect, start_health: int, start_x: int, start_y: int, color: Tuple[int, int, int],
+                 screen_rect: pygame.Rect, border_rect: pygame.Rect, bullet_group: pygame.sprite.Group, start_health: int, start_x: int, start_y: int, color: Tuple[int, int, int],
                  up_direction: bool, is_player: bool, type: SpaceshipType = SpaceshipType.NORMAL_ENEMY):
         super().__init__()
 
@@ -40,6 +40,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect.x = start_x
         self.rect.y = start_y
         self.screen_rect = screen_rect
+        self.border_rect = border_rect
         self.health = start_health
         self.start_health = start_health
         self.start_x = start_x
@@ -60,6 +61,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.ultimate_abilities = pygame.sprite.Group()
         self.ultimate_available = True
 
+        self.bullet_group = bullet_group
         self.type = type
         self.enemy_behavior = Action.NOOP  # Only used for enemies
 
@@ -68,16 +70,16 @@ class Spaceship(pygame.sprite.Sprite):
         self.time_since_shield_activated += 1
         self.time_since_last_bullet += 1
 
-        if self.shield_activated and self.time_since_shield_activated >= SHIELD_DURATION:
-            self.deactivate_shield()
+        # if self.shield_activated and self.time_since_shield_activated >= SHIELD_DURATION:
+        #     self.deactivate_shield()
 
         if action == Action.NOOP:
             return
 
         if action == Action.FIRE:
             self.fire()
-        elif action == Action.ACTIVATE_SHIELD:
-            self.activate_shield()
+        # elif action == Action.ACTIVATE_SHIELD:
+        #     self.activate_shield()
         # elif action == Action.USE_ULTIMATE_ABILITY:
         #     self.use_ultimate_ability()
         else:
@@ -109,7 +111,7 @@ class Spaceship(pygame.sprite.Sprite):
                     break
 
         # Keep sprite on screen
-        self.rect.clamp_ip(self.screen_rect)
+        self.rect.clamp_ip(self.border_rect)
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, self.rect)
@@ -118,7 +120,7 @@ class Spaceship(pygame.sprite.Sprite):
         if self.time_since_last_bullet < self.bullet_interval:
             return
 
-        self.bullets.add(
+        self.bullet_group.add(
             Bullet(
                 centerx=self.rect.centerx,
                 centery=self.rect.y if self.up_direction else self.rect.bottom,
