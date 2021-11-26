@@ -40,7 +40,6 @@ def generate_state_vector(spaceship: Spaceship, vec_len: int) -> np.ndarray:
         i += 2
     return np.array(res)
 
-
 class GameScene(object):
     """
     Our shooter game wrapped in a class.
@@ -148,6 +147,10 @@ class GameScene(object):
 
         # * adding action_num
         self.player_action_num = 0
+        self.player_bullet_max = 0
+        self.enemy_bullet_max = 0
+
+        
         # =========================== Reset ===========================
 
         # self.Reset()
@@ -161,21 +164,75 @@ class GameScene(object):
         pixels_arr = pygame.surfarray.array3d(self.screen)
         return pixels_arr
 
-    def StateVector(self, extra_padding: bool) -> np.ndarray:
-        len_per_spaceship = (STATE_VECTOR_MAX_BULLET_PER_SPACESHIP + 1) * 2
-        total_len = len_per_spaceship * (1 + NORMAL_ENEMY_COUNT + int(extra_padding) * CHARGE_ENEMY_COUNT)
-        state_arr = np.zeros(total_len, dtype=np.float32)
-        state_arr.fill(-1)
+    def StateVector(self, extra_padding=False) -> np.ndarray:
+        # print('Width ', WIDTH - 200)
+        # print('Height ', HEIGHT - OBSTACLE_Y_MAX)
 
-        state_arr[0:len_per_spaceship] = generate_state_vector(self.player, len_per_spaceship)
+        # print('Y MAX ', OBSTACLE_Y_MAX)
+        # print('Y HEIGHT', HEIGHT - OBSTACLE_Y_MAX)
+        # print('player x ', self.player.rect.centerx)
+        # print('player y ', self.player.rect.centery)
+        # if len(self.player_bullet_group) > self.player_bullet_max:
+        #     self.player_bullet_max = len(self.player_bullet_group)
+        # if len(self.enemy_bullet_group) > self.enemy_bullet_max:
+        #     self.enemy_bullet_max = len(self.enemy_bullet_group)
+        # print('Max bullet count')
+        # print(self.player_bullet_max)
+        # print(self.enemy_bullet_max)
 
-        i = len_per_spaceship
+        # * generate player spaceship vector
+        player_pos_x_norm = (self.player.rect.centerx - 100 - SPACESHIP_WIDTH / 2 ) / (WIDTH - 200 - SPACESHIP_WIDTH)
+        player_pos_y_norm = (self.player.rect.centery - OBSTACLE_Y_MAX - SPACESHIP_HEIGHT / 2) / (HEIGHT - OBSTACLE_Y_MAX - SPACESHIP_HEIGHT)
+        space_vector = [player_pos_x_norm, player_pos_y_norm]
+
+        # * generate enemy spaceship vector
         for enemy in self.enemy_group.sprites():
             if isinstance(enemy, Spaceship) and enemy.type == SpaceshipType.NORMAL_ENEMY:
-                state_arr[i:i + len_per_spaceship] = generate_state_vector(enemy, len_per_spaceship)
-            i += len_per_spaceship
+                enemy_pos_x_norm = (enemy.rect.centerx - SPACESHIP_WIDTH / 2) / (WIDTH - SPACESHIP_WIDTH)
+                enemy_pos_y_norm = (enemy.rect.centery - SPACESHIP_HEIGHT / 2) / (220)
+                space_vector += [enemy_pos_x_norm, enemy_pos_y_norm]
 
+        # * generate player bullet vector
+        # player_bullet_vector = [-1 for _ in range(STATE_VECTOR_MAX_BULLET_PER_SPACESHIP * 2)]
+        player_bullet_vector = [-1 for _ in range(4 * 2)]
+        i = 0
+        for bullet in self.player_bullet_group.sprites():
+            bullet_pos_x_norm = bullet.rect.centerx / WIDTH
+            bullet_pos_y_norm = bullet.rect.centery / HEIGHT
+            player_bullet_vector[i] = bullet_pos_x_norm
+            player_bullet_vector[i + 1] = bullet_pos_y_norm
+            i += 2 
+
+        # * generate enemy bullet vector
+        # enemy_bullet_vector = [-1 for _ in range(STATE_VECTOR_MAX_BULLET_PER_SPACESHIP * NORMAL_ENEMY_COUNT * 2)]
+        enemy_bullet_vector = [-1 for _ in range(5 * 2)]
+        i = 0
+        for bullet in self.enemy_bullet_group.sprites():
+            bullet_pos_x_norm = bullet.rect.centerx / WIDTH
+            bullet_pos_y_norm = bullet.rect.centery / HEIGHT
+            enemy_bullet_vector[i] = bullet_pos_x_norm
+            enemy_bullet_vector[i + 1] = bullet_pos_y_norm
+            i += 2 
+
+        # * generate health_pack vector
+        i = 0
+        health_pack_vector = [-1 for _ in range(HEALTH_PACK_MAX_COUNT * 2)]
+        for health_pack in self.health_pack_group.sprites():
+            health_pack_pos_x_norm = (health_pack.rect.centerx - 100 - HEALTH_PACK_WIDTH / 2 ) / (WIDTH - 200 - HEALTH_PACK_WIDTH)
+            health_pack_pos_y_norm = (health_pack.rect.centery - OBSTACLE_Y_MAX - HEALTH_PACK_HEIGHT / 2) / (HEIGHT - OBSTACLE_Y_MAX - HEALTH_PACK_HEIGHT)
+            health_pack_vector[i] = health_pack_pos_x_norm
+            health_pack_vector[i + 1] = health_pack_pos_y_norm
+            i += 2
+
+        # print('DEBUG......')
+        # print(space_vector)
+        # print(player_bullet_vector)
+        # print(enemy_bullet_vector)
+        # print(health_pack_vector)
+
+        state_arr = np.array(space_vector + player_bullet_vector + enemy_bullet_vector + health_pack_vector)
         return state_arr
+
 
     def Done(self):
         return self.done
@@ -375,12 +432,38 @@ class GameScene(object):
         if len(self.health_pack_group.sprites()) >= HEALTH_PACK_MAX_COUNT:
             return
 
+        
+        pos_x = None
+        pos_y = None
+        
+        for j in range(10):
+            separate = True
+            pos_x=random.randrange(self.player_border_rect.left, self.player_border_rect.right - HEALTH_PACK_WIDTH,
+                               HEALTH_PACK_WIDTH // 3)
+            if (abs(pos_x - self.player.rect.x) < 200):
+                separate = False
+            for health_pack in self.health_pack_group.sprites():
+                if (abs(pos_x - health_pack.rect.x) < 60):
+                    separate = False
+            if separate:
+                break
+
+        for j in range(10):
+            separate = True
+            pos_y=random.randrange(self.player_border_rect.top, self.player_border_rect.bottom - HEALTH_PACK_HEIGHT,
+                                HEALTH_PACK_HEIGHT // 3)
+            # if (abs(pos_y - self.player.rect.y) < 60):
+            #     separate = False
+            for health_pack in self.health_pack_group.sprites():
+                if (abs(pos_y - health_pack.rect.y) < 60):
+                    separate = False
+            if separate:
+                break
+
         health_pack = HealthPack(
             image=self.health_pack_image,
-            x=random.randrange(self.player_border_rect.left, self.player_border_rect.right - HEALTH_PACK_WIDTH,
-                               HEALTH_PACK_WIDTH // 3),
-            y=random.randrange(self.player_border_rect.top, self.player_border_rect.bottom - HEALTH_PACK_HEIGHT,
-                               HEALTH_PACK_HEIGHT // 3)
+            x=pos_x,
+            y=pos_y
         )
         self.health_pack_group.add(health_pack)
 
@@ -440,12 +523,12 @@ class GameScene(object):
             movement = left_or_right if random.random() < 0.95 else up_or_down
         enemy_action = movement if random.random() < 0.7 else fire_or_shield
 
-        print(enemy_action)
+        
         return enemy_action
 
     def update(self, player_action_num: int):
         # Player action from input
-        print("Each frame")
+        # print("Each frame")
         player_action = Action(player_action_num)
         self.player.update(player_action, self.obstacle_group.sprites() + self.enemy_group.sprites())
         self.player_bullet_group.update()
@@ -462,10 +545,7 @@ class GameScene(object):
                 enemy.ultimate_abilities.update()
             i += 1
 
-        # Spawn health pack if time is reached
-        if HEALTH_PACK_ENABLED and len(
-                self.health_pack_group.sprites()) < HEALTH_PACK_MAX_COUNT:  # and self.frame_count % HEALTH_PACK_TIME_INTERVAL == 0:
-            self.spawn_health_pack()
+        
 
         # Spawn health pack if time is reached
         if self.frame_count == CHARGE_ENEMY_SPAWN_INTERVAL and CHARGE_ENEMY_ENABLED:
@@ -519,6 +599,8 @@ class GameScene(object):
                         self.player.health = 0
                         self.reward += Reward.PLAYER_HIT_CHARGE_ENEMY.value
 
+       
+
         # 3) Bullets vs obstacles
         pygame.sprite.groupcollide(self.obstacle_group, self.player_bullet_group, False, True)
         pygame.sprite.groupcollide(self.obstacle_group, self.enemy_bullet_group, False, True)
@@ -527,6 +609,11 @@ class GameScene(object):
         hit_list = pygame.sprite.spritecollide(self.player, self.health_pack_group, True)
         # self.player.health += HEALTH_PACK_HEALTH_RECOVERED * len(hit_list)
         self.reward += Reward.PLAYER_GET_HEALTH_PACK.value * len(hit_list)
+
+         # Spawn health pack if time is reached
+        if HEALTH_PACK_ENABLED and len(
+                self.health_pack_group.sprites()) < HEALTH_PACK_MAX_COUNT:  # and self.frame_count % HEALTH_PACK_TIME_INTERVAL == 0:
+            self.spawn_health_pack()
 
         if True:  # self.frame_count % NORMAL_ENEMY_SPAWN_INTERVAL == 0:
             for enemy in self.enemy_group.sprites():
@@ -608,7 +695,8 @@ if __name__ == "__main__":
 
     while not game.Done():
         game.Play(-1)
-        print(game.AdditionalState())
+        # print(game.AdditionalState())
+        sv = game.StateVector()
         if len(game.AdditionalState().shape) < 1:
             print("Warn: " + str(game.AdditionalState().shape))
 

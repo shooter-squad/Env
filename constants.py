@@ -43,7 +43,7 @@ TITLE = "AI bot"
 
 WIDTH = 800
 HEIGHT = 800
-FPS = 60
+FPS = 30
 VEL = 5
 
 ENEMY_COUNT = 3
@@ -107,7 +107,7 @@ BLUE_SPACESHIP_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship
 GREEN_SPACESHIP_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_green.png')
 YELLOW_SPACESHIP_SHIELDED_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_yellow_shielded.png')
 RED_SPACESHIP_SHIELDED_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'spaceship_red_shielded.png')
-HEALTH_PACK_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'health_pack.png')
+HEALTH_PACK_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'treasure.png')
 OBSTACLE_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'obstacle.png')
 YELLOW_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'yellow_ultimate_ability.png')
 RED_ULTIMATE_ABILITY_IMAGE_PATH = os.path.join(package_directory, 'Assets', 'red_ultimate_ability.png')
