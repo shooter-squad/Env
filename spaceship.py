@@ -83,7 +83,7 @@ class Spaceship(pygame.sprite.Sprite):
         # elif action == Action.USE_ULTIMATE_ABILITY:
         #     self.use_ultimate_ability()
         else:
-            vel = 1 if self.up_direction else -1
+            vel = 2 if self.up_direction else -2
             if action == Action.LEFT:
                 vel *= -VEL
             elif action == Action.RIGHT:
